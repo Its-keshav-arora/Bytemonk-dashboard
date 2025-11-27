@@ -1,73 +1,123 @@
-# Welcome to your Lovable project
+# Projects Dashboard
 
-## Project info
+A clean, minimal projects dashboard built with React, Vite, TypeScript, and Clerk authentication.
 
-**URL**: https://lovable.dev/projects/7bd23547-13ea-43e8-9f4d-7d775a41702b
+## Features
 
-## How can I edit this code?
+- **Authentication**: Secure sign-in and sign-up using Clerk
+- **Project Management**: Create, read, update, and delete projects
+- **Clean UI**: Minimal, text-only design with professional typography
+- **Protected Routes**: Dashboard and projects pages require authentication
+- **Responsive Layout**: Works on desktop and mobile devices
 
-There are several ways of editing your application.
+## Tech Stack
 
-**Use Lovable**
+- **Frontend**: React + Vite + TypeScript
+- **Styling**: Tailwind CSS
+- **Authentication**: Clerk
+- **Routing**: React Router
+- **UI Components**: shadcn/ui
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/7bd23547-13ea-43e8-9f4d-7d775a41702b) and start prompting.
+## Setup Instructions
 
-Changes made via Lovable will be committed automatically to this repo.
+### 1. Get Clerk API Keys
 
-**Use your preferred IDE**
+1. Go to [https://clerk.com](https://clerk.com) and create a free account
+2. Create a new application
+3. Copy your **Publishable Key** from the dashboard
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### 2. Configure Environment
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+The `VITE_CLERK_PUBLISHABLE_KEY` secret has already been added to your Lovable project.
 
-Follow these steps:
+If you need to update it:
+1. Go to Project Settings in Lovable
+2. Navigate to Secrets
+3. Update the `VITE_CLERK_PUBLISHABLE_KEY` value
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### 3. Run the Project
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+The project is already running in Lovable! Just navigate to:
+- `/` - Home page with sign in/sign up links
+- `/sign-in` - Sign in page
+- `/sign-up` - Sign up page
+- `/dashboard` - Main dashboard (requires auth)
+- `/projects` - Projects list (requires auth)
+- `/projects/new` - Create new project (requires auth)
+- `/projects/:id/edit` - Edit project (requires auth)
 
-# Step 3: Install the necessary dependencies.
-npm i
+## Project Structure
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```
+src/
+├── components/
+│   ├── ui/              # shadcn UI components
+│   └── Layout.tsx       # Main layout with navigation
+├── lib/
+│   ├── clerk.tsx        # Clerk provider setup
+│   └── utils.ts         # Utility functions
+├── pages/
+│   ├── Index.tsx        # Home page
+│   ├── SignIn.tsx       # Sign in page
+│   ├── SignUp.tsx       # Sign up page
+│   ├── Dashboard.tsx    # Dashboard page
+│   ├── Projects.tsx     # Projects list page
+│   ├── NewProject.tsx   # Create project page
+│   ├── EditProject.tsx  # Edit project page
+│   └── NotFound.tsx     # 404 page
+├── App.tsx              # Main app with routing
+└── main.tsx             # Entry point
 ```
 
-**Edit a file directly in GitHub**
+## Next Steps
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Connect to Backend
 
-**Use GitHub Codespaces**
+Currently, the project uses mock data. To persist projects, you can:
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+1. **Use Lovable Cloud** (recommended):
+   - Click "Connect Lovable Cloud" in the project
+   - Create database tables for projects
+   - Update the pages to use Supabase client
 
-## What technologies are used for this project?
+2. **Connect MCP Server**:
+   - Go to Project Settings → Integrations
+   - Connect your MCP server
+   - Update the API calls in the project pages
 
-This project is built with:
+3. **External API**:
+   - Create your own backend API
+   - Update the fetch calls in the project pages
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Customize
 
-## How can I deploy this project?
+- Update the design system in `src/index.css`
+- Modify the layout in `src/components/Layout.tsx`
+- Add more fields to projects (status, tags, etc.)
+- Implement search and filtering
 
-Simply open [Lovable](https://lovable.dev/projects/7bd23547-13ea-43e8-9f4d-7d775a41702b) and click on Share -> Publish.
+## Development
 
-## Can I connect a custom domain to my Lovable project?
+```bash
+# Install dependencies
+npm install
 
-Yes, you can!
+# Run development server
+npm run dev
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+# Build for production
+npm run build
+```
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## Deployment
+
+Deploy directly from Lovable:
+1. Click "Publish" in the top right
+2. Your app will be live at your Lovable subdomain
+3. Optionally connect a custom domain in Project Settings
+
+## Support
+
+- [Clerk Documentation](https://clerk.com/docs)
+- [Lovable Documentation](https://docs.lovable.dev)
+- [React Documentation](https://react.dev)
