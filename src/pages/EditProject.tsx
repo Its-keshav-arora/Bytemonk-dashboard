@@ -1,31 +1,71 @@
-import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import Layout from '@/components/Layout';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import Layout from "@/components/Layout";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 export default function EditProject() {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  // Mock data - replace with API call later
-  const [title, setTitle] = useState('Sample Project');
-  const [description, setDescription] = useState(
-    'This is a sample project description'
-  );
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Fetch project by ID
+  useEffect(() => {
+    async function fetchProject() {
+      try {
+        const res = await fetch(`http://localhost:4000/api/projects/${id}`, {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!res.ok) {
+          console.error("Failed to fetch project");
+          return;
+        }
+
+        const data = await res.json();
+        setTitle(data.title);
+        setDescription(data.description);
+      } catch (err) {
+        console.error("Error fetching project:", err);
+      }
+    }
+
+    fetchProject();
+  }, [id]);
+
+  // Update project
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Mock submission - replace with API call later
-    console.log('Updating project:', { id, title, description });
-    navigate('/projects');
+
+    try {
+      const res = await fetch(`http://localhost:4000/api/projects/${id}`, {
+        method: "PUT",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ title, description }),
+      });
+
+      if (res.ok) {
+        navigate("/projects");
+      } else {
+        console.error("Failed to update project");
+      }
+    } catch (err) {
+      console.error("Error updating project:", err);
+    }
   };
 
-  const handleCancel = () => {
-    navigate('/projects');
-  };
+  const handleCancel = () => navigate("/projects");
 
   return (
     <Layout>

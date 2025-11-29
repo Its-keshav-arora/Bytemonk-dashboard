@@ -5,17 +5,33 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { useAuth } from "@clerk/clerk-react";
 
 export default function NewProject() {
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const { getToken } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Mock submission - replace with API call later
-    console.log('Creating project:', { title, description });
-    navigate('/projects');
+
+    const token = await getToken();
+
+    const res = await fetch("http://localhost:4000/api/projects", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`, // ★ IMPORTANT
+      },
+      body: JSON.stringify({ title, description }),
+    });
+
+    if (res.ok) {
+      navigate("/projects");
+    } else {
+      console.error("Failed to create project");
+    }
   };
 
   return (
