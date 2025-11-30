@@ -129,6 +129,7 @@ FRONTEND_URL=http://localhost:8080
 -  enter_your_key_here
 - -----END PUBLIC KEY-----"
 
+
 **Optional Variables (with defaults):**
 - `PORT` - Server port (default: 4000)
 - `ALLOWED_ORIGIN` - CORS allowed origin (default: http://localhost:8080)
