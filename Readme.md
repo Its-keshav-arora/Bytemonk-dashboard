@@ -117,6 +117,8 @@ ALLOWED_ORIGIN=http://localhost:8080
 # Frontend URL (OPTIONAL - default: http://localhost:8080)
 # Used for Clerk token verification authorized parties
 FRONTEND_URL=http://localhost:8080
+
+
 ```
 
 **Required Variables:**
