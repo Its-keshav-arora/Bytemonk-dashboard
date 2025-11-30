@@ -380,24 +380,6 @@ source .venv/bin/activate  # macOS/Linux
 uv run server.py
 ```
 
-## 🧪 Testing
-
-### Manual Testing
-
-1. Start all services (frontend, backend)
-2. Sign in to the application
-3. Use browser DevTools to inspect API requests
-4. Verify authentication headers are included
-
-### Backend API Testing
-
-A test script is provided in the backend directory:
-
-```bash
-cd backend
-export CLERK_TOKEN=your_token_here  # Get token from browser DevTools
-node test-routes.js
-```
 
 ## 🔒 Security Considerations
 
@@ -405,94 +387,6 @@ node test-routes.js
 - Tokens are stored securely in the MCP server (file permissions set to 600 on Unix systems)
 - CORS is configured to allow only specified origins
 - Environment variables should never be committed to version control
-
-## 🐛 Troubleshooting
-
-### Frontend Issues
-
-- **Port already in use**: Change the port in `vite.config.ts` or kill the process using port 8080
-- **Clerk authentication not working**: Verify `VITE_CLERK_PUBLISHABLE_KEY` is set correctly
-
-### Backend Issues
-
-- **MongoDB connection error**: Ensure MongoDB is running and `MONGODB_URI` is correct
-- **401 Unauthorized**: Verify `CLERK_SECRET_KEY` is correct and matches your Clerk dashboard
-- **CORS errors**: Check `ALLOWED_ORIGIN` matches your frontend URL
-
-### MCP Server Issues
-
-- **MCP server not appearing in Claude Desktop**: 
-  - Verify the configuration file path is correct
-  - Ensure the `--directory` path matches your actual project location
-  - Restart Claude Desktop after configuration changes
-- **Authentication errors**: 
-  - Ensure you've set the auth token using `set_auth_token` tool
-  - Verify the token is valid and not expired
-  - Check that the backend server is running
-
-## 📝 Environment Variables Summary
-
-### Frontend Environment Variables
-
-Create a `.env` file in the `frontend` directory:
-
-| Variable | Required | Description | Example |
-|----------|----------|-------------|---------|
-| `VITE_CLERK_PUBLISHABLE_KEY` | ✅ **Yes** | Clerk publishable key for frontend authentication | `pk_test_xxxxxxxxxxxxxxxxxxxxx` |
-
-**Example `.env` file:**
-```env
-# Frontend/.env
-VITE_CLERK_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxxx
-```
-
-**Note**: 
-- All Vite environment variables must be prefixed with `VITE_`
-- Restart the dev server after changing environment variables
-- The publishable key is safe to expose in frontend code (it's public by design)
-
-### Backend Environment Variables
-
-Create a `.env` file in the `backend` directory:
-
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `MONGODB_URI` | ✅ **Yes** | - | MongoDB connection string |
-| `CLERK_SECRET_KEY` | ✅ **Yes** | - | Clerk backend secret key for token verification |
-| `PORT` | ❌ No | `4000` | Port number for the backend server |
-| `ALLOWED_ORIGIN` | ❌ No | `http://localhost:8080` | CORS allowed origin (should match frontend URL) |
-| `FRONTEND_URL` | ❌ No | `http://localhost:8080` | Frontend URL for Clerk token verification |
-
-**Example `.env` file:**
-```env
-# Backend/.env
-
-# REQUIRED: MongoDB Connection
-# Local: mongodb://localhost:27017/project-dashboard
-# Atlas: mongodb+srv://username:password@cluster.mongodb.net/project-dashboard
-MONGODB_URI=mongodb://localhost:27017/project-dashboard
-
-# REQUIRED: Clerk Backend Secret Key
-# Get from: https://dashboard.clerk.com > API Keys > Backend API > Secret Key
-CLERK_SECRET_KEY=sk_test_xxxxxxxxxxxxxxxxxxxxx
-
-# OPTIONAL: Server Configuration (defaults shown)
-PORT=4000
-ALLOWED_ORIGIN=http://localhost:8080
-FRONTEND_URL=http://localhost:8080
-```
-
-### Environment Variables Quick Reference
-
-**Frontend (1 required):**
-- ✅ `VITE_CLERK_PUBLISHABLE_KEY` - Required
-
-**Backend (2 required, 3 optional):**
-- ✅ `MONGODB_URI` - Required
-- ✅ `CLERK_SECRET_KEY` - Required
-- ⚙️ `PORT` - Optional (default: 4000)
-- ⚙️ `ALLOWED_ORIGIN` - Optional (default: http://localhost:8080)
-- ⚙️ `FRONTEND_URL` - Optional (default: http://localhost:8080)
 
 ### Getting Clerk API Keys
 
@@ -507,14 +401,6 @@ FRONTEND_URL=http://localhost:8080
    - Copy the **Secret Key**
    - Add to `backend/.env` as `CLERK_SECRET_KEY`
 
-### Security Best Practices
-
-- ⚠️ **Never commit `.env` files** to version control
-- ⚠️ **Never share your `CLERK_SECRET_KEY`** publicly
-- ✅ Add `.env` to `.gitignore`
-- ✅ Use different keys for development and production
-- ✅ Rotate keys if they're accidentally exposed
-
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
@@ -525,9 +411,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
 
 ## 🔗 Useful Links
 
@@ -538,20 +421,6 @@ This project is open source and available under the [MIT License](LICENSE).
 - [MCP Protocol Documentation](https://modelcontextprotocol.io)
 - [Claude Desktop](https://claude.ai/download)
 
-## 👤 Author
-
-**Keshav Arora**
-
-- GitHub: [@Its-keshav-arora](https://github.com/Its-keshav-arora)
-
-## 🙏 Acknowledgments
-
-- [Clerk](https://clerk.com) for authentication
-- [shadcn/ui](https://ui.shadcn.com) for UI components
-- [Claude AI](https://claude.ai) for AI integration
-- All contributors and open-source libraries used in this project
-
----
 
 **Note**: Make sure all three services (frontend, backend, and optionally MCP server) are running for the full application to work correctly. The MCP server is only needed if you want to use Claude Desktop integration.
 
