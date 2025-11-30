@@ -18,7 +18,7 @@ const Index = () => {
           <div className="space-y-4">
             <h1 className="text-5xl font-bold tracking-tight sm:text-6xl">
               <span className="bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
-                ProjectHub
+                ByteMonk
               </span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">

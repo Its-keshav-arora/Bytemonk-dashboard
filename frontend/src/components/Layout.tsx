@@ -20,7 +20,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   <FolderKanban className="h-5 w-5" />
                 </div>
                 <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
-                  ProjectHub
+                  ByteMonk
                 </span>
               </Link>
               <div className="hidden md:flex items-center gap-1">
