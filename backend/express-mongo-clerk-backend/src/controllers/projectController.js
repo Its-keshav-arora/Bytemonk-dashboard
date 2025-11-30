@@ -1,10 +1,9 @@
 const Project = require("../models/Project");
-const { getAuth } = require("@clerk/express");
 
 // Create project
 exports.createProject = async (req, res) => {
   try {
-    const { userId } = getAuth(req);
+    const userId = req.userId || req.auth?.userId;
     if (!userId) return res.status(401).json({ message: "Unauthorized" });
 
     const { title, description } = req.body;
@@ -27,7 +26,9 @@ exports.createProject = async (req, res) => {
 // Get all projects
 exports.getProjects = async (req, res) => {
   try {
-    const { userId } = getAuth(req);
+    const userId = req.userId || req.auth?.userId;
+    if (!userId) return res.status(401).json({ message: "Unauthorized" });
+    
     const projects = await Project.find({ ownerId: userId }).sort({
       createdAt: -1,
     });
@@ -42,7 +43,9 @@ exports.getProjects = async (req, res) => {
 // Get single project
 exports.getProject = async (req, res) => {
   try {
-    const { userId } = getAuth(req);
+    const userId = req.userId || req.auth?.userId;
+    if (!userId) return res.status(401).json({ message: "Unauthorized" });
+    
     const project = await Project.findById(req.params.id);
 
     if (!project) return res.status(404).json({ message: "Not found" });
@@ -59,7 +62,9 @@ exports.getProject = async (req, res) => {
 // Update
 exports.updateProject = async (req, res) => {
   try {
-    const { userId } = getAuth(req);
+    const userId = req.userId || req.auth?.userId;
+    if (!userId) return res.status(401).json({ message: "Unauthorized" });
+    
     const project = await Project.findById(req.params.id);
 
     if (!project) return res.status(404).json({ message: "Not found" });
@@ -81,7 +86,9 @@ exports.updateProject = async (req, res) => {
 // Delete
 exports.deleteProject = async (req, res) => {
   try {
-    const { userId } = getAuth(req);
+    const userId = req.userId || req.auth?.userId;
+    if (!userId) return res.status(401).json({ message: "Unauthorized" });
+    
     const project = await Project.findById(req.params.id);
 
     if (!project) return res.status(404).json({ message: "Not found" });

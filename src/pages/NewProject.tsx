@@ -22,7 +22,7 @@ export default function NewProject() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`, // ★ IMPORTANT
+        "Authorization": `Bearer ${token}`,
       },
       body: JSON.stringify({ title, description }),
     });

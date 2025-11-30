@@ -5,10 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { useAuth } from "@clerk/clerk-react";
 
 export default function EditProject() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { getToken } = useAuth();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -17,11 +19,12 @@ export default function EditProject() {
   useEffect(() => {
     async function fetchProject() {
       try {
+        const token = await getToken();
         const res = await fetch(`http://localhost:4000/api/projects/${id}`, {
           method: "GET",
-          credentials: "include",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
         });
 
@@ -39,18 +42,19 @@ export default function EditProject() {
     }
 
     fetchProject();
-  }, [id]);
+  }, [id, getToken]);
 
   // Update project
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
+      const token = await getToken();
       const res = await fetch(`http://localhost:4000/api/projects/${id}`, {
         method: "PUT",
-        credentials: "include",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ title, description }),
       });
