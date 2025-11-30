@@ -122,11 +122,16 @@ FRONTEND_URL=http://localhost:8080
 **Required Variables:**
 - `MONGODB_URI` - MongoDB connection string (required)
 - `CLERK_SECRET_KEY` - Clerk backend secret key (required)
+- `CLERK_API_KEY` - sk_test_XXXXXXXXXXXXXXXX
+- `CLERK_FRONTEND_API` - https://usable-cat-36.clerk.accounts.dev
+- `CLERK_PUBLISHABLE_KEY` - pk_test_XXXXXXXXXXXXXX
+- `CLERK_JWT_KEY=`"-----BEGIN PUBLIC KEY-----`
+-  enter_your_key_here
+- -----END PUBLIC KEY-----"
 
 **Optional Variables (with defaults):**
 - `PORT` - Server port (default: 4000)
 - `ALLOWED_ORIGIN` - CORS allowed origin (default: http://localhost:8080)
-- `FRONTEND_URL` - Frontend URL for Clerk verification (default: http://localhost:8080)
 
 #### Start the Backend Server
 
