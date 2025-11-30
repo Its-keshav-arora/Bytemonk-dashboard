@@ -4,24 +4,19 @@ from pathlib import Path
 from typing import Optional
 from mcp.server.fastmcp import FastMCP
 
-# ======================================================
-# CONFIG
-# ======================================================
 
+# CONFIG
 BACKEND_URL = "http://localhost:4000"
 LOGIN_URL = "http://localhost:8080/sign-in"
 TOKEN_FILE = Path.home() / ".clerk_mcp_token"
 
-mcp = FastMCP("bytemonk")   # MUST match your Claude config
+mcp = FastMCP("bytemonk")
 
 # A persistent HTTP client
 CLIENT = httpx.AsyncClient(follow_redirects=True, timeout=20.0)
 
 
-# ======================================================
 # Token Management
-# ======================================================
-
 def get_stored_token() -> Optional[str]:
     """Get stored Clerk token from file."""
     try:
@@ -32,11 +27,10 @@ def get_stored_token() -> Optional[str]:
     return None
 
 
+# Function to store the token (Login)
 def store_token(token: str):
-    """Store Clerk token to file."""
     try:
         TOKEN_FILE.write_text(token)
-        # Set file permissions (Unix only, Windows uses ACLs)
         if platform.system() != "Windows":
             TOKEN_FILE.chmod(0o600)  # Read/write for owner only
         return True
@@ -44,9 +38,8 @@ def store_token(token: str):
         print(f"Error storing token: {e}")
         return False
 
-
+# Function to remove the token (Sign-out)
 def clear_token():
-    """Clear stored token."""
     try:
         if TOKEN_FILE.exists():
             TOKEN_FILE.unlink()
@@ -54,23 +47,9 @@ def clear_token():
         print(f"Error clearing token: {e}")
 
 
-# ======================================================
-# Helper to call your backend (Clerk-protected)
-# ======================================================
 
+# Helper to call your backend (Clerk-protected)
 async def backend_request(method: str, endpoint: str, data=None, token: Optional[str] = None) -> dict:
-    """
-    Proxy requests to your backend with Clerk Bearer token authentication.
-    
-    Args:
-        method: HTTP method (GET, POST, PUT, DELETE)
-        endpoint: API endpoint (e.g., "/api/projects")
-        data: Optional request body data
-        token: Optional Clerk token (if not provided, uses stored token)
-    
-    Returns:
-        dict: Response data or error information
-    """
     url = f"{BACKEND_URL}{endpoint}"
     
     # Get token (use provided token or stored token)
@@ -134,16 +113,10 @@ async def backend_request(method: str, endpoint: str, data=None, token: Optional
         return {"error": "Invalid JSON from backend", "text": response.text}
 
 
-# ======================================================
 # MCP TOOLS
-# ======================================================
-
 @mcp.tool()
 async def check_auth_status() -> dict:
-    """
-    Check if the user is currently authenticated.
-    Returns authentication status and instructions if not authenticated.
-    """
+    # It checks if the user is already authenticated or not
     token = get_stored_token()
     if not token:
         return {
@@ -180,29 +153,13 @@ async def check_auth_status() -> dict:
 
 @mcp.tool()
 async def set_auth_token(token: str) -> dict:
-    """
-    Store your Clerk authentication token.
-    
-    To get your token:
-    1. Sign in to the app at the login URL
-    2. Open browser DevTools (F12)
-    3. Go to Network tab
-    4. Make any API request
-    5. Find the request and look at Headers
-    6. Copy the value from Authorization header (the part after 'Bearer ')
-    
-    Args:
-        token: Your Clerk session token (the part after 'Bearer ' in the Authorization header)
-    """
     if not token or not token.strip():
         return {"error": "Token cannot be empty"}
     
-    # Remove 'Bearer ' prefix if present
     token = token.strip()
     if token.startswith("Bearer "):
         token = token[7:].strip()
-    
-    # Test the token first
+
     test_result = await backend_request("GET", "/health", token=token)
     if "error" in test_result and "Not authenticated" in test_result.get("error", ""):
         return {
@@ -225,17 +182,12 @@ async def set_auth_token(token: str) -> dict:
 
 @mcp.tool()
 async def clear_auth_token() -> dict:
-    """Clear the stored authentication token."""
     clear_token()
     return {"success": True, "message": "Authentication token cleared."}
 
 
 @mcp.tool()
 async def get_login_url() -> str:
-    """
-    Get the login URL for authentication.
-    After logging in, you'll need to get your token from browser DevTools and use 'set_auth_token' to store it.
-    """
     return (
         f"Please authenticate by opening this URL in your browser:\n"
         f"{LOGIN_URL}\n\n"
@@ -251,10 +203,7 @@ async def get_login_url() -> str:
 
 @mcp.tool()
 async def list_projects() -> dict:
-    """
-    List all projects for the authenticated user.
-    Requires authentication - will prompt for login if not authenticated.
-    """
+   # Lists all the projects the user has (protected & authenticated route)
     result = await backend_request("GET", "/api/projects")
     
     # If not authenticated, provide helpful instructions
@@ -269,12 +218,7 @@ async def list_projects() -> dict:
 
 @mcp.tool()
 async def get_project(project_id: str) -> dict:
-    """
-    Get a specific project by ID.
-    
-    Args:
-        project_id: The ID of the project to retrieve
-    """
+    # Get details of Specific project using project ID.
     result = await backend_request("GET", f"/api/projects/{project_id}")
     
     if "error" in result and "Not authenticated" in result.get("error", ""):
@@ -288,13 +232,7 @@ async def get_project(project_id: str) -> dict:
 
 @mcp.tool()
 async def create_project(title: str, description: str = "") -> dict:
-    """
-    Create a new project.
-    
-    Args:
-        title: The title of the project (required)
-        description: The description of the project (optional)
-    """
+    # This tool creates the new project using the /api/projects backend API.
     if not title or not title.strip():
         return {"error": "Title is required"}
     
@@ -314,14 +252,7 @@ async def create_project(title: str, description: str = "") -> dict:
 
 @mcp.tool()
 async def update_project(project_id: str, title: str = None, description: str = None) -> dict:
-    """
-    Update an existing project.
-    
-    Args:
-        project_id: The ID of the project to update (required)
-        title: The new title (optional)
-        description: The new description (optional)
-    """
+    # This tool updates the project information using backend APIs
     if not project_id:
         return {"error": "Project ID is required"}
     
@@ -347,12 +278,7 @@ async def update_project(project_id: str, title: str = None, description: str = 
 
 @mcp.tool()
 async def delete_project(project_id: str) -> dict:
-    """
-    Delete a project.
-    
-    Args:
-        project_id: The ID of the project to delete
-    """
+    # Tool used to delete a project
     if not project_id:
         return {"error": "Project ID is required"}
     
@@ -367,10 +293,7 @@ async def delete_project(project_id: str) -> dict:
     return result
 
 
-# ======================================================
-# MAIN ENTRY
-# ======================================================
-
+# Main Function to start the MCP Server
 def main():
     print("Starting MCP server...")
     mcp.run(transport="stdio")
