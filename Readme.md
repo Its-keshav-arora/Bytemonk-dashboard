@@ -105,6 +105,11 @@ MONGODB_URI=mongodb://localhost:27017/project-dashboard
 # Get CLERK_SECRET_KEY from your Clerk Dashboard: https://dashboard.clerk.com
 # Go to: API Keys > Backend API > Secret Key
 CLERK_SECRET_KEY=sk_test_xxxxxxxxxxxxxxxxxxxxx
+CLERK_FRONTEND_API - https://usable-cat-36.clerk.accounts.dev
+CLERK_PUBLISHABLE_KEY - pk_test_XXXXXXXXXXXXXX
+CLERK_JWT_KEY="-----BEGIN PUBLIC KEY-----`
+    enter_your_key_here
+-----END PUBLIC KEY-----"
 
 # Server Configuration (OPTIONAL - defaults provided)
 # Port number for the backend server (default: 4000)
