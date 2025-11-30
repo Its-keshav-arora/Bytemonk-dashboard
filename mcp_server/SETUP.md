@@ -116,3 +116,4 @@ Try these commands in Claude:
 - File has restricted permissions
 - Clear token when done: "Clear my auth token"
 
+

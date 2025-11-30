@@ -201,3 +201,4 @@ You can modify these constants in `server.py`:
 - `LOGIN_URL`: Frontend login page URL (default: `http://localhost:8080/sign-in`)
 - `TOKEN_FILE`: Path to token storage file (default: `~/.clerk_mcp_token`)
 
+
