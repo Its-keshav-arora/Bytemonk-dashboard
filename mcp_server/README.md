@@ -33,7 +33,7 @@ Add this to your Claude Desktop configuration file:
     "bytemonk": {
       "command": "python",
       "args": [
-        "C:/Users/kesha/Desktop/Tech/Coding/project/project-dashboard/mcp_server/server.py"
+        "PATH_TO_FILE/server.py"
       ],
       "env": {}
     }
@@ -48,7 +48,7 @@ Add this to your Claude Desktop configuration file:
 Make sure your backend is running:
 
 ```bash
-cd backend/express-mongo-clerk-backend
+cd backend
 npm run dev
 ```
 
