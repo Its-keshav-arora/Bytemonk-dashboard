@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { Edit, Trash2, Calendar, FolderKanban, Plus, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { apiRequest } from '@/lib/api';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -37,7 +38,7 @@ export default function Projects() {
     const fetchProjects = async () => {
       try {
         const token = await getToken();
-        const res = await fetch("http://localhost:4000/api/projects", {
+        const res = await apiRequest("http://localhost:4000/api/projects", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -73,7 +74,7 @@ export default function Projects() {
     setDeletingId(id);
     try {
       const token = await getToken();
-      const res = await fetch(`http://localhost:4000/api/projects/${id}`, {
+      const res = await apiRequest(`http://localhost:4000/api/projects/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });

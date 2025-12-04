@@ -6,6 +6,14 @@ exports.createProject = async (req, res) => {
     const userId = req.userId || req.auth?.userId;
     if (!userId) return res.status(401).json({ message: "Unauthorized" });
 
+    // Check role - MCP role can only read
+    const role = req.userRole || req.auth?.role || 'human';
+    if (role === 'mcp') {
+      return res.status(403).json({ 
+        message: "Forbidden: MCP role can only perform read operations" 
+      });
+    }
+
     const { title, description } = req.body;
     if (!title) return res.status(400).json({ message: "Title is required" });
 
@@ -64,6 +72,14 @@ exports.updateProject = async (req, res) => {
   try {
     const userId = req.userId || req.auth?.userId;
     if (!userId) return res.status(401).json({ message: "Unauthorized" });
+
+    // Check role - MCP role can only read
+    const role = req.userRole || req.auth?.role || 'human';
+    if (role === 'mcp') {
+      return res.status(403).json({ 
+        message: "Forbidden: MCP role can only perform read operations" 
+      });
+    }
     
     const project = await Project.findById(req.params.id);
 
@@ -88,6 +104,14 @@ exports.deleteProject = async (req, res) => {
   try {
     const userId = req.userId || req.auth?.userId;
     if (!userId) return res.status(401).json({ message: "Unauthorized" });
+
+    // Check role - MCP role can only read
+    const role = req.userRole || req.auth?.role || 'human';
+    if (role === 'mcp') {
+      return res.status(403).json({ 
+        message: "Forbidden: MCP role can only perform read operations" 
+      });
+    }
     
     const project = await Project.findById(req.params.id);
 

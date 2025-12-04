@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useAuth } from "@clerk/clerk-react";
 import { ArrowLeft, Loader2, Save } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { apiRequest } from '@/lib/api';
 
 export default function EditProject() {
   const navigate = useNavigate();
@@ -26,10 +27,9 @@ export default function EditProject() {
     async function fetchProject() {
       try {
         const token = await getToken();
-        const res = await fetch(`http://localhost:4000/api/projects/${id}`, {
+        const res = await apiRequest(`http://localhost:4000/api/projects/${id}`, {
           method: "GET",
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
         });
@@ -70,10 +70,9 @@ export default function EditProject() {
 
     try {
       const token = await getToken();
-      const res = await fetch(`http://localhost:4000/api/projects/${id}`, {
+      const res = await apiRequest(`http://localhost:4000/api/projects/${id}`, {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ title: title.trim(), description: description.trim() }),

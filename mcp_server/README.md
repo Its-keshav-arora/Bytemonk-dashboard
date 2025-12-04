@@ -424,3 +424,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 **Note**: Make sure all three services (frontend, backend, and optionally MCP server) are running for the full application to work correctly. The MCP server is only needed if you want to use Claude Desktop integration.
 
+

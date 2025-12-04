@@ -19,8 +19,9 @@ from fastapi.middleware.cors import CORSMiddleware
 
 # CONFIG
 BACKEND_URL = "http://localhost:4000"
-LOGIN_URL = "http://localhost:8080/sign-in"
+LOGIN_URL = "http://localhost:8080/sign-in?source=mcp"
 TOKEN_FILE = Path.home() / ".clerk_mcp_token"
+ROLE_FILE = Path.home() / ".clerk_mcp_role"
 
 mcp = FastMCP("bytemonk")
 
@@ -38,13 +39,24 @@ def get_stored_token() -> Optional[str]:
         print(f"Error reading token file: {e}")
     return None
 
+def get_stored_role() -> Optional[str]:
+    """Get stored role from file."""
+    try:
+        if ROLE_FILE.exists():
+            return ROLE_FILE.read_text().strip()
+    except Exception as e:
+        print(f"Error reading role file: {e}")
+    return None
+
 
 # Function to store the token (Login)
-def store_token(token: str):
+def store_token(token: str, role: str = "human"):
     try:
         TOKEN_FILE.write_text(token)
+        ROLE_FILE.write_text(role)
         if platform.system() != "Windows":
             TOKEN_FILE.chmod(0o600)  # Read/write for owner only
+            ROLE_FILE.chmod(0o600)  # Read/write for owner only
         print("✔ Token stored automatically")
         return True
     except Exception as e:
@@ -56,6 +68,8 @@ def clear_token():
     try:
         if TOKEN_FILE.exists():
             TOKEN_FILE.unlink()
+        if ROLE_FILE.exists():
+            ROLE_FILE.unlink()
     except Exception as e:
         print(f"Error clearing token: {e}")
 
@@ -76,18 +90,18 @@ async def backend_request(method: str, endpoint: str, data=None, token: Optional
                 f"To authenticate:\n"
                 f"1. Open your browser and go to: {LOGIN_URL}\n"
                 f"2. Sign in with your credentials\n"
-                f"3. After signing in, open browser DevTools (F12)\n"
-                f"4. Go to Network tab and make any API request\n"
-                f"5. Find the Authorization header in the request\n"
-                f"6. Copy the token (the part after 'Bearer ')\n"
-                f"7. Use the 'set_auth_token' tool to store your token\n"
-                f"8. Then retry your original command"
+                f"3. Then retry your original command"
             )
         }
 
+    # MCP tools always use "mcp" role for requests (read-only access)
+    # This ensures MCP can only perform read operations regardless of how the token was obtained
+    role = "mcp"
+    
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {auth_token}",
+        "X-User-Role": role,
     }
 
     try:
@@ -109,14 +123,26 @@ async def backend_request(method: str, endpoint: str, data=None, token: Optional
             "message": "Authentication token is invalid or expired.",
             "redirect": LOGIN_URL,
             "instructions": (
-                f"Your authentication token has expired or is invalid.\n"
-                f"Please re-authenticate:\n"
-                f"1. Open: {LOGIN_URL}\n"
-                f"2. Sign in again\n"
-                f"3. Get a new token from browser DevTools (Authorization header)\n"
-                f"4. Use 'set_auth_token' tool to update your token"
+                f"After log in, please try again !! \n"
             )
         }
+
+    # Permission denied (403 Forbidden) - return backend's error message
+    if response.status_code == 403:
+        try:
+            error_data = response.json()
+            return {
+                "error": "Forbidden",
+                "message": error_data.get("message", "You don't have permission to perform this operation"),
+                "status": 403
+            }
+        except:
+            return {
+                "error": "Forbidden",
+                "message": "You don't have permission to perform this operation",
+                "status": 403,
+                "text": response.text
+            }
 
     # Successful
     try:
@@ -142,18 +168,20 @@ http_app.add_middleware(
 
 class TokenPayload(BaseModel):
     token: str
+    role: str = "human"
 
 @http_app.post("/set-token")
 async def receive_token(payload: TokenPayload):
     """React app posts the Clerk token here automatically."""
     token = payload.token.strip()
+    role = payload.role.strip() if payload.role else "human"
 
     if token.startswith("Bearer "):
         token = token.replace("Bearer ", "").strip()
 
-    if store_token(token):
-        print("🔥 Token received from frontend & saved")
-        return {"success": True, "message": "Token stored"}
+    if store_token(token, role):
+        print(f"🔥 Token received from frontend & saved (role: {role})")
+        return {"success": True, "message": "Token stored", "role": role}
     else:
         return {"success": False, "error": "Failed to save token"}
 
@@ -163,7 +191,7 @@ def start_http_server():
 
 # Start the HTTP token server in the background
 Thread(target=start_http_server, daemon=True).start()
-print("🌐 MCP Token Listener running on http://127.0.0.1:8765/set-token")
+# print("🌐 MCP Token Listener running on http://127.0.0.1:8765/set-token")
 
 
 
@@ -181,11 +209,7 @@ async def check_auth_status() -> dict:
                 f"To authenticate:\n"
                 f"1. Open: {LOGIN_URL}\n"
                 f"2. Sign in with your credentials\n"
-                f"3. After signing in, open browser DevTools (F12)\n"
-                f"4. Go to Network tab and make any API request\n"
-                f"5. Find the Authorization header in the request\n"
-                f"6. Copy the token (the part after 'Bearer ')\n"
-                f"7. Use the 'set_auth_token' tool to store your token"
+                f"3. After signing in, Try again with the same prompt !!\n"
             )
         }
     
@@ -221,11 +245,11 @@ async def set_auth_token(token: str) -> dict:
             "message": "The provided token is invalid or expired. Please get a fresh token from your browser."
         }
     
-    # Store the token
-    if store_token(token):
+    # Store the token with mcp role (since this is called from MCP)
+    if store_token(token, "mcp"):
         return {
             "success": True,
-            "message": "Authentication token stored successfully. You can now use database operations."
+            "message": "Authentication token stored successfully. You can now use database operations (read-only for MCP)."
         }
     else:
         return {
@@ -245,13 +269,7 @@ async def get_login_url() -> str:
     return (
         f"Please authenticate by opening this URL in your browser:\n"
         f"{LOGIN_URL}\n\n"
-        f"After signing in:\n"
-        f"1. Open browser DevTools (F12)\n"
-        f"2. Go to Network tab\n"
-        f"3. Make any API request\n"
-        f"4. Find the Authorization header\n"
-        f"5. Copy the token (part after 'Bearer ')\n"
-        f"6. Use 'set_auth_token' tool to store it"
+        f"After signing in, try again with the same prompt !!\n"
     )
 
 
@@ -339,7 +357,7 @@ async def delete_project(project_id: str) -> dict:
 
 # Main Function to start the MCP Server
 def main():
-    print("Starting MCP server...")
+    # print("Starting MCP server...")
     mcp.run(transport="stdio")
 
 

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { FolderKanban, Plus, TrendingUp, Calendar } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useAuth } from '@clerk/clerk-react';
+import { apiRequest } from '@/lib/api';
 
 export default function Dashboard() {
   const { user } = useUser();
@@ -17,7 +18,7 @@ export default function Dashboard() {
     const fetchProjectCount = async () => {
       try {
         const token = await getToken();
-        const res = await fetch("http://localhost:4000/api/projects", {
+        const res = await apiRequest("http://localhost:4000/api/projects", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

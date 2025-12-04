@@ -93,12 +93,17 @@ const clerkAuth = async (req, res, next) => {
       return res.status(401).json({ message: "Unauthorized - Invalid token" });
     }
 
+    // Extract role from X-User-Role header (defaults to "human" if not provided)
+    const role = req.headers['x-user-role'] || 'human';
+
     // Store auth info in request for use in controllers
     req.auth = {
       userId: sessionClaims.sub,
       sessionId: sessionClaims.sid,
+      role: role,
     };
     req.userId = sessionClaims.sub;
+    req.userRole = role;
     next();
   } catch (err) {
     console.error("Clerk Auth Error:", err.message || err);
