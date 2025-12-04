@@ -1,5 +1,0 @@
-httpx
-fastapi
-uvicorn
-pydantic
-mcp
