@@ -1,8 +1,20 @@
+import asyncio
+import sys
+
+if sys.platform.startswith("win"):
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
+
 import httpx
 import platform
 from pathlib import Path
 from typing import Optional
 from mcp.server.fastmcp import FastMCP
+from fastapi import FastAPI
+import uvicorn
+from threading import Thread
+from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 
 
 # CONFIG
@@ -33,6 +45,7 @@ def store_token(token: str):
         TOKEN_FILE.write_text(token)
         if platform.system() != "Windows":
             TOKEN_FILE.chmod(0o600)  # Read/write for owner only
+        print("✔ Token stored automatically")
         return True
     except Exception as e:
         print(f"Error storing token: {e}")
@@ -45,7 +58,6 @@ def clear_token():
             TOKEN_FILE.unlink()
     except Exception as e:
         print(f"Error clearing token: {e}")
-
 
 
 # Helper to call your backend (Clerk-protected)
@@ -111,6 +123,48 @@ async def backend_request(method: str, endpoint: str, data=None, token: Optional
         return response.json()
     except:
         return {"error": "Invalid JSON from backend", "text": response.text}
+
+
+
+# -------------------------------------------------------------
+# NEW: LOCAL FASTAPI ENDPOINT TO RECEIVE TOKEN FROM FRONTEND
+# -------------------------------------------------------------
+
+http_app = FastAPI()
+# Enable CORS for all origins (adjust as needed)
+http_app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+class TokenPayload(BaseModel):
+    token: str
+
+@http_app.post("/set-token")
+async def receive_token(payload: TokenPayload):
+    """React app posts the Clerk token here automatically."""
+    token = payload.token.strip()
+
+    if token.startswith("Bearer "):
+        token = token.replace("Bearer ", "").strip()
+
+    if store_token(token):
+        print("🔥 Token received from frontend & saved")
+        return {"success": True, "message": "Token stored"}
+    else:
+        return {"success": False, "error": "Failed to save token"}
+
+def start_http_server():
+    """Starts FastAPI server in background for token communication."""
+    uvicorn.run(http_app, host="127.0.0.1", port=8765, log_level="error")
+
+# Start the HTTP token server in the background
+Thread(target=start_http_server, daemon=True).start()
+print("🌐 MCP Token Listener running on http://127.0.0.1:8765/set-token")
+
 
 
 # MCP TOOLS
@@ -203,36 +257,28 @@ async def get_login_url() -> str:
 
 @mcp.tool()
 async def list_projects() -> dict:
-   # Lists all the projects the user has (protected & authenticated route)
     result = await backend_request("GET", "/api/projects")
-    
-    # If not authenticated, provide helpful instructions
     if "error" in result and "Not authenticated" in result.get("error", ""):
         return {
             **result,
             "action_required": "Please authenticate first using 'get_login_url' and 'set_auth_token' tools."
         }
-    
     return result
 
 
 @mcp.tool()
 async def get_project(project_id: str) -> dict:
-    # Get details of Specific project using project ID.
     result = await backend_request("GET", f"/api/projects/{project_id}")
-    
     if "error" in result and "Not authenticated" in result.get("error", ""):
         return {
             **result,
             "action_required": "Please authenticate first using 'get_login_url' and 'set_auth_token' tools."
         }
-    
     return result
 
 
 @mcp.tool()
 async def create_project(title: str, description: str = "") -> dict:
-    # This tool creates the new project using the /api/projects backend API.
     if not title or not title.strip():
         return {"error": "Title is required"}
     
@@ -252,7 +298,6 @@ async def create_project(title: str, description: str = "") -> dict:
 
 @mcp.tool()
 async def update_project(project_id: str, title: str = None, description: str = None) -> dict:
-    # This tool updates the project information using backend APIs
     if not project_id:
         return {"error": "Project ID is required"}
     
@@ -278,7 +323,6 @@ async def update_project(project_id: str, title: str = None, description: str = 
 
 @mcp.tool()
 async def delete_project(project_id: str) -> dict:
-    # Tool used to delete a project
     if not project_id:
         return {"error": "Project ID is required"}
     

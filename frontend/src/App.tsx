@@ -13,6 +13,7 @@ import Dashboard from "./pages/Dashboard";
 import Projects from "./pages/Projects";
 import NewProject from "./pages/NewProject";
 import EditProject from "./pages/EditProject";
+import TokenListener from "./TokenListener";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,7 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
+        <TokenListener />
         <BrowserRouter>
           <Routes>
             {/* Public routes */}
