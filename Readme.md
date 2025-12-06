@@ -169,7 +169,7 @@ uv venv
 source .venv/bin/activate
 
 # Install dependencies
-uv pip install httpx mcp requests
+uv pip install httpx mcp fastapi
 
 # Create server.py file
 new-item server.py  # Windows PowerShell
@@ -181,8 +181,8 @@ touch server.py     # macOS/Linux
 
 The MCP server dependencies are already defined in `pyproject.toml`:
 - `httpx>=0.28.1`
-- `mcp[cli]>=1.22.0`
-- `requests>=2.32.5`
+- `mcp>=1.23.1`
+- `fastapi>=0.123.10`
 
 ## 🤖 Claude Desktop Integration
 
