@@ -66,10 +66,6 @@ npm install
 Create a `.env` file in the `frontend` directory:
 
 ```env
-# Clerk Authentication (REQUIRED)
-# Get VITE_CLERK_PUBLISHABLE_KEY from your Clerk Dashboard
-# Follow the detailed steps in the "Authentication Setup" section to get this key
-# After selecting React.js tech stack in API Keys section, copy the VITE_CLERK_PUBLISHABLE_KEY
 VITE_CLERK_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxxx
 ```
 
@@ -97,35 +93,16 @@ npm install
 Create a `.env` file in the `backend` directory:
 
 ```env
-# MongoDB Connection (REQUIRED)
-# Local MongoDB: mongodb://localhost:27017/project-dashboard
-# MongoDB Atlas: mongodb+srv://username:password@cluster.mongodb.net/project-dashboard
-MONGODB_URI=mongodb://localhost:27017/project-dashboard
-
-# Clerk Authentication (REQUIRED)
-# Get all Clerk keys from your Clerk Dashboard
-# Follow the detailed steps in the "Authentication Setup" section to get these keys
-# After selecting React.js tech stack in API Keys section, copy all the required keys:
+MONGODB_URI=your_mongodb_uri
 CLERK_SECRET_KEY=sk_test_xxxxxxxxxxxxxxxxxxxxx
 CLERK_FRONTEND_API=https://usable-cat-36.clerk.accounts.dev
 CLERK_PUBLISHABLE_KEY=pk_test_XXXXXXXXXXXXXX
 CLERK_JWT_KEY="-----BEGIN PUBLIC KEY-----
     enter_your_key_here
 -----END PUBLIC KEY-----"
-
-# Server Configuration (OPTIONAL - defaults provided)
-# Port number for the backend server (default: 4000)
 PORT=4000
-
-# CORS Configuration (OPTIONAL - default: http://localhost:8080)
-# Allowed origin for CORS requests (should match your frontend URL)
 ALLOWED_ORIGIN=http://localhost:8080
-
-# Frontend URL (OPTIONAL - default: http://localhost:8080)
-# Used for Clerk token verification authorized parties
 FRONTEND_URL=http://localhost:8080
-
-
 ```
 
 **Required Variables:**
