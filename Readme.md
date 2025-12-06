@@ -270,22 +270,12 @@ Follow these detailed steps to get all the required Clerk API keys:
 
 ### Frontend Configuration
 
-The frontend requires the Clerk Publishable Key to be set in your environment:
-
 **Required Environment Variable:**
 - `VITE_CLERK_PUBLISHABLE_KEY` - Clerk publishable key (required)
 
-**How to get it:**
-1. Follow the steps above to access your Clerk Dashboard
-2. In the API Keys section (with React.js tech stack selected), you will see `VITE_CLERK_PUBLISHABLE_KEY`
-3. Copy the key (it starts with `pk_test...`)
-4. Add it to your `frontend/.env` file as shown in the Frontend Setup section above
-
-**Note**: All Vite environment variables must be prefixed with `VITE_` to be accessible in the frontend code. If you're using a hardcoded key in `src/lib/clerk.tsx`, you should update it to use the environment variable for better security and flexibility.
+**Note**: All Vite environment variables must be prefixed with `VITE_` to be accessible in the frontend code.
 
 ### Backend Configuration
-
-The backend requires multiple Clerk keys for authentication verification:
 
 **Required Environment Variables:**
 - `CLERK_SECRET_KEY` - Clerk backend secret key (required)
@@ -293,45 +283,11 @@ The backend requires multiple Clerk keys for authentication verification:
 - `CLERK_PUBLISHABLE_KEY` - Clerk publishable key (required)
 - `CLERK_JWT_KEY` - JWKS Public Key (required)
 
-**How to get them:**
-1. Follow the steps above to access your Clerk Dashboard
-2. In the API Keys section (with React.js tech stack selected), you will find:
-   - `CLERK_SECRET_KEY` - Copy this key (it starts with `sk_test...`)
-   - `CLERK_FRONTEND_API` - Copy the Frontend API URL
-   - `CLERK_PUBLISHABLE_KEY` - Copy the publishable key (it starts with `pk_test...`)
-   - `CLERK_JWT_KEY` - Copy the JWKS Public Key (includes the full `-----BEGIN PUBLIC KEY-----` ... `-----END PUBLIC KEY-----` block)
-3. Add all these keys to your `backend/.env` file as shown in the Backend Setup section above
-
 **Important**: Never commit your `.env` files to version control. All secret keys should remain private.
 
-### MCP Server Authentication
-
-The MCP server requires authentication to access the backend API:
-
-1. Sign in to your application at `http://localhost:8080/sign-in`
-2. Open browser DevTools (F12)
-3. Go to the **Network** tab
-4. Make any API request
-5. Find the request and look at the **Headers**
-6. Copy the value from the **Authorization** header (the part after `Bearer `)
-7. In Claude Desktop, use the `set_auth_token` tool to store your token
-
-Example in Claude Desktop:
-```
-Use the set_auth_token tool with my token: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...
-```
-
-## 📡 API Endpoints
-
-All API endpoints require authentication via Clerk Bearer token in the Authorization header:
-
-```
-Authorization: Bearer <clerk_session_token>
-```
 
 ### Available Endpoints
 
-- `GET /health` - Health check (no auth required)
 - `GET /api/projects` - List all projects for the authenticated user
 - `POST /api/projects` - Create a new project
   ```json
