@@ -1,38 +1,38 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { useAuth } from '@clerk/nextjs';
+import { useUser } from "@clerk/nextjs";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { setRole } from "@/app/admin/_actions";
 
 export default function TokenListener() {
-  const { isSignedIn, getToken } = useAuth();
+  const { user, isLoaded } = useUser();
+  const params = useSearchParams();
+  const router = useRouter();
+
+  const [roleUpdated, setRoleUpdated] = useState(false);
 
   useEffect(() => {
-    const sendTokenToMCP = async () => {
-      if (!isSignedIn) return;
+    if (!isLoaded || !user) return; // wait until user is fully loaded
+    if (roleUpdated) return; // prevent double updates
 
-      const token = await getToken();
-      if (!token) return;
+    const role = params.get("role");
+    if (!role) return; // no role param → nothing to do
 
-      // Get role from localStorage (set by SignIn/SignUp pages)
-      const role = typeof window !== 'undefined' ? (localStorage.getItem('userRole') || 'human') : 'human';
+    // Prepare form data for your server action
+    const form = new FormData();
+    form.append("id", user.id);
+    form.append("role", role);
 
-      try {
-        await fetch('http://127.0.0.1:8765/set-token', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ token, role }),
-        });
+    // Call your server action to update Clerk metadata
+    setRole(form).then(() => {
+      setRoleUpdated(true);
 
-        console.log(`✔ Token sent to MCP server (role: ${role})`);
-      } catch (err) {
-        console.error('✖ Failed to send token to MCP:', err);
-      }
-    };
-
-    sendTokenToMCP();
-  }, [isSignedIn, getToken]);
+      // 🔥 CLEAN THE URL → remove ?role=xxx
+      const cleanUrl = window.location.pathname; // keeps /dashboard only
+      router.replace(cleanUrl);
+    });
+  }, [user, isLoaded, params, router, roleUpdated]);
 
   return null;
 }

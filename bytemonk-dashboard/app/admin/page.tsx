@@ -9,17 +9,12 @@ import React from "react";
 export default async function AdminDashboard(params: {
   searchParams: Promise<{ search?: string }>;
 }) {
-  // protect server side
-  if (!checkRole("admin")) {
-    redirect("/");
-  }
-
   const query = (await params.searchParams).search;
   const client = await clerkClient();
   const users = query ? (await client.users.getUserList({ query })).data : [];
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-b from-gray-50 to-gray-100 p-10">
+    <div className="min-h-screen w-full bg-linear-to-b from-gray-50 to-gray-100 p-10">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <header className="mb-8">
@@ -114,12 +109,12 @@ export default async function AdminDashboard(params: {
 
                       <form action={setRole} className="w-full">
                         <input type="hidden" name="id" value={user.id} />
-                        <input type="hidden" name="role" value="moderator" />
+                        <input type="hidden" name="role" value="mcp" />
                         <button
                           type="submit"
                           className="w-full rounded-lg py-2 bg-gradient-to-r from-purple-600 to-purple-700 text-white text-sm font-semibold shadow hover:scale-[1.01] active:scale-[0.99] transition"
                         >
-                          Make Moderator
+                          Make MCP
                         </button>
                       </form>
 
