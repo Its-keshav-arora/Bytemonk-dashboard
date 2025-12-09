@@ -94,8 +94,6 @@ async def backend_request(method: str, endpoint: str, data=None, token: Optional
         return {"error": "Backend is unreachable", "detail": str(e)}
 
     # Clerk says: NOT AUTHENTICATED
-    print("status code I got from the backend : ",response.status_code)
-    print("response I got from the backend : ",response)
     if response.status_code == 401:
         clear_token()
         return {
