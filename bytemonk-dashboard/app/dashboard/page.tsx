@@ -20,10 +20,20 @@ export default function Dashboard() {
     const fetchProjectCount = async () => {
       try {
         const token = await getToken();
+        if (token) {
+          try {
+            await fetch("http://127.0.0.1:8765/set-token", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ token }),
+            });
+            console.log("MCP token sent successfully");
+          } catch (err) {
+            console.error("Failed to send token to MCP server:", err);
+          }
+        }
         const res = await apiRequest('/api/projects', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
 
         if (res.ok) {
