@@ -18,8 +18,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 
 # CONFIG
-BACKEND_URL = "http://localhost:4000"
-LOGIN_URL = "http://localhost:8080/sign-in?source=mcp"
+BACKEND_URL = "http://localhost:3000"
+LOGIN_URL = "http://localhost:3000/sign-in?role=mcp"
 TOKEN_FILE = Path.home() / ".clerk_mcp_token"
 ROLE_FILE = Path.home() / ".clerk_mcp_role"
 
@@ -149,8 +149,6 @@ async def backend_request(method: str, endpoint: str, data=None, token: Optional
         return response.json()
     except:
         return {"error": "Invalid JSON from backend", "text": response.text}
-
-
 
 # -------------------------------------------------------------
 # NEW: LOCAL FASTAPI ENDPOINT TO RECEIVE TOKEN FROM FRONTEND
