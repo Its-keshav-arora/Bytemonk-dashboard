@@ -2,9 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import connectDB from '@/lib/db';
 import Project from '@/models/Project';
-import { checkRole } from '@/utils/roles';
 
-// GET /api/projects - Get all projects for the authenticated user
+// GET /api/projects - Get all projects (Both Admin & MCP can read)
 export async function GET(req: NextRequest) {
   try {
     await connectDB();
@@ -32,15 +31,6 @@ export async function POST(req: NextRequest) {
     const { userId } = await auth();
     if (!userId)
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-
-    // Secure role check
-    const isMcp = await checkRole('mcp');
-    if (isMcp) {
-      return NextResponse.json(
-        { message: 'Forbidden: MCP role can only perform read operations' },
-        { status: 403 }
-      );
-    }
 
     const body = await req.json();
     const { title, description } = body;

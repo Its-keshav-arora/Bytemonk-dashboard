@@ -83,7 +83,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     if (!userId)
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
 
-    // Only ADMINS and HUMANS can delete
+    // Only ADMIN can delete projects
     const isMcp = await checkRole('mcp')
     if (isMcp)
       return NextResponse.json(
