@@ -1,32 +1,23 @@
 # ByteMonk Dashboard
 
-A modern, full-stack project management dashboard with AI-powered integration through Claude Desktop. Built with React, Express, MongoDB, and featuring an MCP (Model Context Protocol) server for seamless interaction with Claude AI.
+A modern, full-stack project management dashboard with AI-powered integration through Claude Desktop. Built with Next.js, MongoDB, and featuring an MCP (Model Context Protocol) server for seamless interaction with Claude AI.
 
 ## 🚀 Features
 
 - **🔐 Secure Authentication**: Clerk-based authentication for secure user management
 - **📊 Project Management**: Full CRUD operations for projects (Create, Read, Update, Delete)
 - **🤖 AI Integration**: MCP server integration with Claude Desktop for natural language project management
-- **💻 Modern UI**: Beautiful, responsive interface built with React, TypeScript, and shadcn/ui
+- **💻 Modern UI**: Beautiful, responsive interface built with Next.js, TypeScript, and shadcn/ui
 - **🔒 Protected Routes**: Secure access control for authenticated users only
 - **📱 Responsive Design**: Works seamlessly on desktop and mobile devices
 
 ## 🛠️ Tech Stack
 
-### Frontend
-- **React 18** with TypeScript
-- **Vite** for fast development and building
+### Full Stack
+- **Next.js** with TypeScript
 - **Tailwind CSS** for styling
-- **shadcn/ui** for UI components
-- **Clerk** for authentication
-- **React Router** for navigation
-- **TanStack Query** for data fetching
-
-### Backend
-- **Node.js** with Express
 - **MongoDB** with Mongoose
-- **Clerk** for authentication middleware
-- **CORS** enabled for cross-origin requests
+- **Clerk** for authentication
 
 ### MCP Server
 - **Python 3.10+** with FastMCP
@@ -54,80 +45,52 @@ git clone https://github.com/Its-keshav-arora/Bytemonk-dashboard.git
 cd Bytemonk-dashboard
 ```
 
-### 2. Frontend Setup
+### 2. Install Dependencies
 
 ```bash
-cd frontend
 npm install
 ```
 
-#### Environment Variables
+### 3. Environment Variables
 
-Create a `.env` file in the `frontend` directory:
-
-```env
-VITE_CLERK_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxxx
-```
-
-**Note**: All Vite environment variables must be prefixed with `VITE_` to be accessible in the frontend code.
-
-#### Start the Frontend Server
-
-```bash
-npm run dev
-```
-
-The frontend will be available at `http://localhost:8080`
-
-### 3. Backend Setup
-
-Open a new terminal window:
-
-```bash
-cd backend
-npm install
-```
-
-#### Environment Variables
-
-Create a `.env` file in the `backend` directory:
+Create a `.env.local` file in the root directory:
 
 ```env
+# MongoDB Configuration
 MONGODB_URI=your_mongodb_uri
+
+# Clerk Authentication
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxxx
 CLERK_SECRET_KEY=sk_test_xxxxxxxxxxxxxxxxxxxxx
-CLERK_FRONTEND_API=https://usable-cat-36.clerk.accounts.dev
-CLERK_PUBLISHABLE_KEY=pk_test_XXXXXXXXXXXXXX
+CLERK_FRONTEND_API=url_given_in_API_key_section
 CLERK_JWT_KEY="-----BEGIN PUBLIC KEY-----
     enter_your_key_here
 -----END PUBLIC KEY-----"
-PORT=4000
-ALLOWED_ORIGIN=http://localhost:8080
-FRONTEND_URL=http://localhost:8080
+
+# Server Configuration
+NEXT_PUBLIC_API_URL=http://localhost:3000
 ```
 
 **Required Variables:**
 - `MONGODB_URI` - MongoDB connection string (required)
-- `CLERK_API_KEY` - Clerk backend secret key (required)
-- `CLERK_FRONTEND_API` - https://usable-cat-36.clerk.accounts.dev
-- `CLERK_PUBLISHABLE_KEY` - pk_test_XXXXXXXXXXXXXX
-- `CLERK_JWT_KEY=`"-----BEGIN PUBLIC KEY-----`
--  enter_your_key_here
-- -----END PUBLIC KEY-----"
-
+- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` - Clerk publishable key for frontend (required)
+- `CLERK_SECRET_KEY` - Clerk backend secret key (required)
+- `CLERK_FRONTEND_API` - Clerk frontend API URL (required)
+- `CLERK_JWT_KEY` - JWKS Public Key (required)
 
 **Optional Variables (with defaults):**
-- `PORT` - Server port (default: 4000)
-- `ALLOWED_ORIGIN` - CORS allowed origin (default: http://localhost:8080)
+- `NEXT_PUBLIC_API_URL` - API URL for frontend (default: http://localhost:3000)
 
-#### Start the Backend Server
+
+### 4. Start the Development Server
 
 ```bash
 npm run dev
 ```
 
-The backend API will be available at `http://localhost:4000`
+The application will be available at `http://localhost:3000`
 
-### 4. MCP Server Setup
+### 5. MCP Server Setup
 
 Open a third terminal window:
 
@@ -236,28 +199,22 @@ Follow these detailed steps to get all the required Clerk API keys:
    - Click on **"API Keys"**
 
 4. **Switch Tech Stack**:
-   - Switch the tech stack to your own tech stack: **React.js** (in our case)
+   - Switch the tech stack to **Next.js**
    - You will now see all the required keys:
-     - `VITE_CLERK_PUBLISHABLE_KEY` - `pk_testXXXXXXXXXXXX`
+     - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` - `pk_testXXXXXXXXXXXX`
      - `CLERK_SECRET_KEY` - `sk_testXXXXXXXXXXX`
      - **JWKS PUBLIC KEY** (`CLERK_JWT_KEY`)
      - **FRONTEND API URL** (`CLERK_FRONTEND_API`)
 
-5. **Copy the Keys**: Copy each key and paste it in the respective `.env` files as described below.
+5. **Copy the Keys**: Copy each key and paste it in the `.env.local` file as described in the [Environment Variables](#3-environment-variables) section.
 
-### Frontend Configuration
-
-**Required Environment Variable:**
-- `VITE_CLERK_PUBLISHABLE_KEY` - Clerk publishable key (required)
-
-**Note**: All Vite environment variables must be prefixed with `VITE_` to be accessible in the frontend code.
-
-### Backend Configuration
+### Environment Configuration
 
 **Required Environment Variables:**
+- `MONGODB_URI` - MongoDB connection string (required)
+- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` - Clerk publishable key for frontend (required)
 - `CLERK_SECRET_KEY` - Clerk backend secret key (required)
-- `CLERK_FRONTEND_API` - Frontend API URL (required)
-- `CLERK_PUBLISHABLE_KEY` - Clerk publishable key (required)
+- `CLERK_FRONTEND_API` - Clerk frontend API URL (required)
 - `CLERK_JWT_KEY` - JWKS Public Key (required)
 
 **Important**: Never commit your `.env` files to version control. All secret keys should remain private.
@@ -287,50 +244,44 @@ Follow these detailed steps to get all the required Clerk API keys:
 
 ```
 Bytemonk-dashboard/
-├── frontend/                 # React frontend application
-│   ├── src/
-│   │   ├── components/      # React components
-│   │   │   ├── ui/         # shadcn/ui components
-│   │   │   └── Layout.tsx  # Main layout component
-│   │   ├── pages/          # Page components
-│   │   ├── lib/            # Utilities and configurations
-│   │   └── App.tsx         # Main app component
-│   ├── package.json
-│   └── vite.config.ts
+├── app/                     # Next.js app directory
+│   ├── api/                # API routes
+│   │   ├── projects/       # Project API endpoints
+│   │   └── ...
+│   ├── components/         # React components
+│   │   ├── ui/            # shadcn/ui components
+│   │   └── ...
+│   ├── lib/               # Utilities and configurations
+│   ├── (auth)/            # Authentication routes
+│   └── layout.tsx         # Root layout
 │
-├── backend/                 # Express backend API
-│   ├── src/
-│   │   ├── config/         # Database configuration
-│   │   ├── controllers/   # Route controllers
-│   │   ├── models/         # MongoDB models
-│   │   ├── routes/         # API routes
-│   │   └── index.js        # Server entry point
-│   ├── package.json
-│   └── .env                # Environment variables
+├── src/                    # Source files (if using src directory)
+│   ├── models/            # MongoDB models
+│   ├── config/            # Database configuration
+│   └── ...
 │
-└── mcp_server/              # MCP server for Claude Desktop
-    ├── server.py           # MCP server implementation
-    ├── pyproject.toml      # Python dependencies
-    └── README.md           # MCP server documentation
+├── .env.local              # Environment variables
+├── package.json
+├── next.config.js          # Next.js configuration
+│
+└── mcp_server/             # MCP server for Claude Desktop
+    ├── server.py          # MCP server implementation
+    ├── pyproject.toml     # Python dependencies
+    └── README.md          # MCP server documentation
 ```
 
 ## 🚦 Running the Application
 
-You need to run three services simultaneously:
+You need to run two services:
 
-### Terminal 1 - Frontend
+### Terminal 1 - Next.js Application
 ```bash
-cd frontend
 npm run dev
 ```
 
-### Terminal 2 - Backend
-```bash
-cd backend
-npm run dev
-```
+The application will be available at `http://localhost:3000`
 
-### Terminal 3 - MCP Server (Optional, for Claude Desktop integration)
+### Terminal 2 - MCP Server (Optional, for Claude Desktop integration)
 ```bash
 cd mcp_server
 .venv\Scripts\activate  # Windows
@@ -356,13 +307,12 @@ For detailed step-by-step instructions on obtaining all Clerk API keys, refer to
 2. Create a new application with your app name
 3. Choose sign-in options (Email & Google OAuth)
 4. Navigate to **Configure** > **API Keys** (under Instance section)
-5. Switch tech stack to **React.js**
-6. Copy all required keys:
-   - `VITE_CLERK_PUBLISHABLE_KEY` → Add to `frontend/.env`
-   - `CLERK_SECRET_KEY` → Add to `backend/.env`
-   - `CLERK_FRONTEND_API` → Add to `backend/.env`
-   - `CLERK_PUBLISHABLE_KEY` → Add to `backend/.env`
-   - `CLERK_JWT_KEY` → Add to `backend/.env`
+5. Switch tech stack to **Next.js**
+6. Copy all required keys to `.env.local`:
+   - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+   - `CLERK_SECRET_KEY`
+   - `CLERK_FRONTEND_API`
+   - `CLERK_JWT_KEY`
 
 ## 🤝 Contributing
 
@@ -378,12 +328,12 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## 🔗 Useful Links
 
 - [Clerk Documentation](https://clerk.com/docs)
+- [Next.js Documentation](https://nextjs.org/docs)
 - [React Documentation](https://react.dev)
-- [Express Documentation](https://expressjs.com)
 - [MongoDB Documentation](https://docs.mongodb.com)
 - [MCP Protocol Documentation](https://modelcontextprotocol.io)
 - [Claude Desktop](https://claude.ai/download)
 
 
-**Note**: Make sure all three services (frontend, backend, and optionally MCP server) are running for the full application to work correctly. The MCP server is only needed if you want to use Claude Desktop integration.
+**Note**: Make sure the Next.js application (and optionally the MCP server) is running for the full application to work correctly. The MCP server is only needed if you want to use Claude Desktop integration.
 
