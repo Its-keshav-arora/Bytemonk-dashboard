@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { SignUp } from '@clerk/nextjs';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { SignUp } from "@clerk/nextjs";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
 
-export default function SignUpPage() {
+function SignUpPageInner() {
   const params = useSearchParams();
   const router = useRouter();
   const [role, setRole] = useState<string | null>(null);
@@ -34,5 +34,13 @@ export default function SignUpPage() {
         forceRedirectUrl={`/dashboard?role=${role ?? "admin"}`}
       />
     </div>
+  );
+}
+
+export default function SignUpPage() {
+  return (
+    <Suspense fallback={null}>
+      <SignUpPageInner />
+    </Suspense>
   );
 }

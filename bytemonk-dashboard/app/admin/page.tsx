@@ -101,7 +101,7 @@ export default async function AdminDashboard(params: {
                         <input type="hidden" name="role" value="admin" />
                         <button
                           type="submit"
-                          className="w-full rounded-lg py-2 bg-gradient-to-r from-red-600 to-red-700 text-white text-sm font-semibold shadow hover:scale-[1.01] active:scale-[0.99] transition"
+                          className="w-full rounded-lg py-2 bg-linear-to-r from-red-600 to-red-700 text-white text-sm font-semibold shadow hover:scale-[1.01] active:scale-[0.99] transition"
                         >
                           Make Admin
                         </button>
@@ -112,7 +112,7 @@ export default async function AdminDashboard(params: {
                         <input type="hidden" name="role" value="mcp" />
                         <button
                           type="submit"
-                          className="w-full rounded-lg py-2 bg-gradient-to-r from-purple-600 to-purple-700 text-white text-sm font-semibold shadow hover:scale-[1.01] active:scale-[0.99] transition"
+                          className="w-full rounded-lg py-2 bg-linear-to-r from-purple-600 to-purple-700 text-white text-sm font-semibold shadow hover:scale-[1.01] active:scale-[0.99] transition"
                         >
                           Make MCP
                         </button>

@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { SignIn } from '@clerk/nextjs';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { SignIn } from "@clerk/nextjs";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
 
-export default function SignInPage() {
+function SignInPageInner() {
   const params = useSearchParams();
   const router = useRouter();
   const [role, setRole] = useState<string | null>(null);
@@ -13,7 +13,6 @@ export default function SignInPage() {
     const source = params.get("source");
     const existingRole = params.get("role");
 
-    // Prevent infinite loop
     if (existingRole) {
       setRole(existingRole);
       return;
@@ -35,5 +34,13 @@ export default function SignInPage() {
         forceRedirectUrl={`/dashboard?role=${role ?? "admin"}`}
       />
     </div>
+  );
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense fallback={null}>
+      <SignInPageInner />
+    </Suspense>
   );
 }
