@@ -9,8 +9,8 @@ export default function Home() {
       <div className="flex flex-1 items-center justify-center bg-gradient-to-br from-blue-50 via-white to-slate-50 px-4 py-20">
         <div className="mx-auto max-w-4xl text-center space-y-8">
           <div className="flex justify-center mb-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-blue-700 text-white shadow-xl shadow-blue-500/25">
-              <FolderKanban className="h-8 w-8" />
+            <div className="flex h-24 w-24 items-center justify-center rounded-full text-white shadow-xl shadow-blue-500/25">
+              <img src="/BYTEMONK_LOGO.png" alt="ByteMonk Logo" className="h-full w-full" />
             </div>
           </div>
 
