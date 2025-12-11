@@ -19,8 +19,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center gap-8">
               <Link href="/dashboard" className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/25">
-                  <FolderKanban className="h-5 w-5" />
+                <div className="flex h-8 w-8 items-center justify-center rounded-full text-white shadow-lg">
+                  <img src="/BYTEMONK_LOGO.png" alt="ByteMonk Logo" className="h-full w-full" />
                 </div>
                 <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
                   ByteMonk
